@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 export default function Profile() {
     
-    const { firstName, lastName } = useSelector((state) => state.user);
+  const { firstName, lastName } = useSelector((state) => state.user);
+ 
 
     return (
     <main class="main bg-dark">
