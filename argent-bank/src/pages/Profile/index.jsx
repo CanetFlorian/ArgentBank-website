@@ -1,19 +1,40 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useGetUserProfileQuery } from '../../store/apiSlice';
+import { setUser } from '../../store/userSlice';
 
 export default function Profile() {
-    
+
+  const dispatch = useDispatch();
   const { firstName, lastName } = useSelector((state) => state.user);
- 
+  const { data, error , isLoading, isError} = useGetUserProfileQuery();
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setUser({
+        firstName: data.body.firstName,
+        lastName: data.body.lastName,
+        userName: data.body.userName,
+      }));
+    }
+  }, [data, dispatch]);
 
     return (
     <main class="main bg-dark">
         <div class="header">
             <h1>Welcome back<br />
-            {firstName} {lastName}!
+            {isLoading ?  'Chargement' : `${firstName} ${lastName}!`}
             </h1>
             <button class="edit-button">Edit Name</button>
             </div>
+
+            {isError &&(
+              <p style={{ color:'red'}}>
+                Erreur de chargement du profil : {error?.data?.mes}
+              </p>
+            )}
             <h2 class="sr-only">Accounts</h2>
       <section class="account">
         <div class="account-content-wrapper">
