@@ -1,71 +1,149 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useGetUserProfileQuery } from '../../store/apiSlice';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  useGetUserProfileQuery,
+  useUpdateUsernameMutation,
+} from '../../store/apiSlice';
 import { setUser } from '../../store/userSlice';
 
 export default function Profile() {
-
   const dispatch = useDispatch();
-  const { firstName, lastName } = useSelector((state) => state.user);
-  const { data, error , isLoading, isError} = useGetUserProfileQuery();
+  const { firstName, lastName, userName } = useSelector((state) => state.user);
+  const token = useSelector((state) => state.user.token);
+
+  console.log('Token from Redux in Profile:', token);
+
+  
+  const { data, error, isLoading, isError } = useGetUserProfileQuery(undefined, {
+    skip: !token,
+  });
+
+  const [updateUsername, { isLoading: isUpdating, isError: isUpdateError, error: updateError }] =
+    useUpdateUsernameMutation();
+
+  const [editMode, setEditMode] = useState(false);
+  const [newUsername, setNewUsername] = useState('');
 
   useEffect(() => {
     if (data) {
-      dispatch(setUser({
-        firstName: data.body.firstName,
-        lastName: data.body.lastName,
-        userName: data.body.userName,
-      }));
+      dispatch(
+        setUser({
+          firstName: data.body.firstName,
+          lastName: data.body.lastName,
+          userName: data.body.userName,
+        })
+      );
     }
   }, [data, dispatch]);
 
-    return (
-    <main class="main bg-dark">
-        <div class="header">
-            <h1>Welcome back<br />
-            {isLoading ?  'Chargement' : `${firstName} ${lastName}!`}
-            </h1>
-            <button class="edit-button">Edit Name</button>
-            </div>
+  const handleEditClick = () => {
+    setNewUsername(userName || '');
+    setEditMode(true);
+  };
 
-            {isError &&(
-              <p style={{ color:'red'}}>
-                Erreur de chargement du profil : {error?.data?.mes}
-              </p>
-            )}
-            <h2 class="sr-only">Accounts</h2>
-      <section class="account">
-        <div class="account-content-wrapper">
-          <h3 class="account-title">Argent Bank Checking (x8349)</h3>
-          <p class="account-amount">$2,082.79</p>
-          <p class="account-amount-description">Available Balance</p>
+  const handleCancel = () => {
+    setEditMode(false);
+  };
+
+  const handleSave = async () => {
+ if (!token) {
+  console.log("Token non prêt, attente...");
+  return <main className="main bg-dark"><p>Chargement du profil...</p></main>;
+}
+
+    try {
+      const result = await updateUsername(newUsername).unwrap();
+      dispatch(
+        setUser({
+          firstName,
+          lastName,
+          userName: result.body.userName,
+        })
+      );
+      setEditMode(false);
+    } catch (err) {
+      console.error("Erreur lors de la mise à jour du nom d'utilisateur:", err);
+    }
+  };
+
+  return (
+    <main className="main bg-dark">
+      <div className="header">
+        {!editMode ? (
+          <>
+            <h1>
+              Welcome back
+              <br />
+              {isLoading ? 'Chargement en cours...' : `${firstName} ${lastName}!`}
+            </h1>
+            <button className="edit-button" onClick={handleEditClick}>
+              Edit Name
+            </button>
+          </>
+        ) : (
+          <div>
+            <input
+              type="text"
+              value={newUsername}
+              onChange={(e) => setNewUsername(e.target.value)}
+              disabled={isUpdating}
+            />
+            <button className="edit-button" onClick={handleSave} disabled={isUpdating}>
+              {isUpdating ? 'Sauvegarde en cours...' : 'Sauvegarder'}
+            </button>
+            <button className="edit-button" onClick={handleCancel} disabled={isUpdating}>
+              Cancel
+            </button>
+          </div>
+        )}
+      </div>
+
+      {isError && (
+        <p style={{ color: 'red' }}>
+          Erreur de chargement du profil : {error?.data?.message || 'Erreur inconnue'}
+        </p>
+      )}
+
+      {isUpdateError && (
+        <p style={{ color: 'red' }}>
+          Erreur lors de la mise à jour : {updateError?.data?.message || 'Erreur inconnue'}
+        </p>
+      )}
+
+      <h2 className="sr-only">Accounts</h2>
+
+      <section className="account">
+        <div className="account-content-wrapper">
+          <h3 className="account-title">Argent Bank Checking (x8349)</h3>
+          <p className="account-amount">$2,082.79</p>
+          <p className="account-amount-description">Available Balance</p>
         </div>
-        <div class="account-content-wrapper cta">
-          <button class="transaction-button">View transactions</button>
+        <div className="account-content-wrapper cta">
+          <button className="transaction-button">View transactions</button>
         </div>
       </section>
-      <section class="account">
-        <div class="account-content-wrapper">
-          <h3 class="account-title">Argent Bank Savings (x6712)</h3>
-          <p class="account-amount">$10,928.42</p>
-          <p class="account-amount-description">Available Balance</p>
+
+      <section className="account">
+        <div className="account-content-wrapper">
+          <h3 className="account-title">Argent Bank Savings (x6712)</h3>
+          <p className="account-amount">$10,928.42</p>
+          <p className="account-amount-description">Available Balance</p>
         </div>
-        <div class="account-content-wrapper cta">
-          <button class="transaction-button">View transactions</button>
+        <div className="account-content-wrapper cta">
+          <button className="transaction-button">View transactions</button>
         </div>
       </section>
-      <section class="account">
-        <div class="account-content-wrapper">
-          <h3 class="account-title">Argent Bank Credit Card (x8349)</h3>
-          <p class="account-amount">$184.30</p>
-          <p class="account-amount-description">Current Balance</p>
+
+      <section className="account">
+        <div className="account-content-wrapper">
+          <h3 className="account-title">Argent Bank Credit Card (x8349)</h3>
+          <p className="account-amount">$184.30</p>
+          <p className="account-amount-description">Current Balance</p>
         </div>
-        <div class="account-content-wrapper cta">
-          <button class="transaction-button">View transactions</button>
+        <div className="account-content-wrapper cta">
+          <button className="transaction-button">View transactions</button>
         </div>
       </section>
     </main>
-    );
+  );
 }

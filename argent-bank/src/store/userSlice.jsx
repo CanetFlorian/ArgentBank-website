@@ -4,8 +4,8 @@ const initialState = {
     firstName: "",
     lastName: "",
     userName: "",
-    token : null,
-    isAuthenticated: false,
+    token : localStorage.getItem('token') || null,
+    isAuthenticated: !!localStorage.getItem('token'),
 
 };
 
@@ -17,8 +17,11 @@ const userSlice = createSlice({
             state.firstName = action.payload.firstName;
             state.lastName = action.payload.lastName;
             state.userName = action.payload.userName;
-            state.token = action.payload.token;
+            state.token = action.payload.token || state.token;
             state.isAuthenticated = true;
+            if (action.payload.token) { 
+                localStorage.setItem('token', action.payload.token)
+            }
         },
         logout(state) {
             state.firstName = "";
@@ -26,10 +29,12 @@ const userSlice = createSlice({
             state.userName = "";
             state.token = null;
             state.isAuthenticated = false;
+            localStorage.removeItem('token')
         },
     },
 
 }) ;
 
 export const { setUser, logout } = userSlice.actions;
+export const selectUserToken = (state) => state.user.token;
 export default userSlice.reducer;

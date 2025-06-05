@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { selectUserToken} from './userSlice';
 
 export const userApi = createApi ({
     reducerPath: 'userApi',
@@ -6,8 +7,10 @@ export const userApi = createApi ({
         baseUrl: 'http://localhost:3001/api/v1/user/',
     prepareHeaders: (headers, { getState }) => {
    
-      const token = getState().user.token;
+      const token = selectUserToken(getState());
+      
       if (token) {
+        console.log("Token dans prepareheader",token)
         headers.set('Authorization', `Bearer ${token}`);
       }
       return headers;

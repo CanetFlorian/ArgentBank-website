@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 export default function Navbar() {
   
-  const { firstName, isAuthenticated } = useSelector((state) => state.user);
+  const { userName, isAuthenticated } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   return (
@@ -23,7 +23,7 @@ export default function Navbar() {
         {isAuthenticated ? (
           <>
           <Link className='main-nav-item' to="/profile">
-          <i className='fa fa-user-circle'></i> {firstName}
+          <i className='fa fa-user-circle'></i> {userName}
           </Link>
           <button 
           className='main-nav-item'

@@ -4,28 +4,24 @@ import Footer from './components/Footer/index.jsx';
 import Home from './pages/Home/index.jsx';
 import Login from './pages/Login/index.jsx';
 import Profile from './pages/Profile/index.jsx';
-/*import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setUser } from './store/userSlice';*/
+import RequireAuth from './components/RequireToken/index.jsx';
 
 
 function App() {
 
-  /*  const dispatch = useDispatch();
-      useEffect(() => {
-    const fakeUserData = {
-      firstName: 'Florian',
-      lastName: 'Canet'
-    };
-    dispatch(setUser(fakeUserData));
-  }, [dispatch])*/
+
   return (
     <>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile"element={
+          <RequireAuth>
+            <Profile />
+          </RequireAuth>
+        }
+      />
       </Routes>
       <Footer />
     </>
