@@ -136,6 +136,30 @@ body {
   flex-direction: column;
 }
 
+.edit-formulaire {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: white;
+  color: black;
+  gap: 10px;
+  padding-bottom: 20px;
+
+}
+
+.form-groupe input {
+  font-size: 16px;
+  border-radius: 5px;
+  width: 150px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
 @media (min-width: 920px) {
   .features {
     flex-direction: row;

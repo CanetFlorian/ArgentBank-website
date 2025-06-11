@@ -81,19 +81,34 @@ export default function Profile() {
             </button>
           </>
         ) : (
-          <div>
-            <input
-              type="text"
-              value={newUsername}
-              onChange={(e) => setNewUsername(e.target.value)}
-              disabled={isUpdating}
-            />
-            <button className="edit-button" onClick={handleSave} disabled={isUpdating}>
-              {isUpdating ? 'Sauvegarde en cours...' : 'Sauvegarder'}
-            </button>
-            <button className="edit-button" onClick={handleCancel} disabled={isUpdating}>
-              Cancel
-            </button>
+            <div className="edit-formulaire">
+              <h2>Edit user info</h2>
+              <div className="form-groupe">
+              <label htmlFor="username">Username: </label>
+              <input
+                id="username"
+                type="text"
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value)}
+                disabled={isUpdating}
+              />
+            </div>
+            <div className="form-groupe">
+              <label>First name: </label>
+              <input type="text" value={firstName} disabled />
+            </div>
+            <div className="form-groupe">
+              <label>Last name: </label>
+              <input type="text" value={lastName} disabled />
+            </div>
+            <div className="form-buttons">
+              <button className="edit-button" onClick={handleSave} disabled={isUpdating}>
+                {isUpdating ? 'Sauvegarde en cours...' : 'Sauvegarder'}
+              </button>
+              <button className="edit-button" onClick={handleCancel} disabled={isUpdating}>
+                Cancel
+              </button>
+            </div>
           </div>
         )}
       </div>
