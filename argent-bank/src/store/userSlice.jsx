@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     firstName: "",
     lastName: "",
-    userName: "",
+    userName: localStorage.getItem('userName') || null,
     token : localStorage.getItem('token') || null,
     isAuthenticated: !!localStorage.getItem('token'),
 
@@ -17,6 +17,7 @@ const userSlice = createSlice({
             state.firstName = action.payload.firstName;
             state.lastName = action.payload.lastName;
             state.userName = action.payload.userName;
+            localStorage.setItem('userName', action.payload.userName);
             state.token = action.payload.token || state.token;
             state.isAuthenticated = true;
             if (action.payload.token) { 

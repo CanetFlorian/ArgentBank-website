@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 export default function Navbar() {
   
   const { userName, isAuthenticated } = useSelector((state) => state.user);
+ 
   const dispatch = useDispatch();
 
   return (
