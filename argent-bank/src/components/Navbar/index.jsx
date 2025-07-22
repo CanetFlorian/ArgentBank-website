@@ -31,7 +31,7 @@ export default function Navbar() {
           onClick={() => dispatch(logout())}
           style={{cursor:'pointer'}}
           >
-            <i className='fa fa-sign-out'></i> Sign Out
+            <i className='fa fa-power-off'></i> 
           </button>
           </>
         ) : (
